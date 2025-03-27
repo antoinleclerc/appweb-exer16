@@ -1,85 +1,50 @@
-# Markdown Extension Examples
+# Revue de code du TP1 de Antoine Leclerc
 
-This page demonstrates some of the built-in markdown extensions provided by VitePress.
+## Revue component
 
-## Syntax Highlighting
+### ListeLego.vue
 
-VitePress provides Syntax Highlighting powered by [Shiki](https://github.com/shikijs/shiki), with additional features like line-highlighting:
-
-**Input**
-
-````md
-```js{4}
-export default {
-  data () {
-    return {
-      msg: 'Highlighted!'
-    }
-  }
-}
-```
-````
-
-**Output**
+**Problème alertes**
 
 ```js{4}
-export default {
-  data () {
-    return {
-      msg: 'Highlighted!'
-    }
-  }
-}
+const detailsVisible = ref<number | null>(null);
+
+const toggleDetails = (id: number) => {
+  detailsVisible.value = detailsVisible.value === id ? null : id;
+};
+
+const dismissAlert = () => {
+  alertVisible.value = false;
+};
 ```
 
-## Custom Containers
+La fermeture de l'une alerte ferme toutes les alertes sans prendre en compte si l'utilisateur a vu toutes les alertes.
 
-**Input**
+## Revue TS
 
-```md
-::: info
-This is an info box.
-:::
+### Database.ts
 
-::: tip
-This is a tip.
-:::
+Mauvais nommage : le nom du fichier Database.ts
+doit être changer puisqu'il n'est pas une Database.
 
-::: warning
-This is a warning.
-:::
+[Convention de nommage](https://fr.wikipedia.org/wiki/Convention_de_nommage#:~:text=Une%20convention%20de%20nommage%20dans,code%20source%20et%20la%20documentation.https:/)
 
-::: danger
-This is a dangerous warning.
-:::
+### Function.ts
 
-::: details
-This is a details block.
-:::
+**Problème génération id**
+
+```js{4}
+export const ajouterProduit = (produit: PieceLego) => {
+  tousLesPieces.value.push({
+    ...produit,
+    id: tousLesPieces.value.length + 1,
+  });
+  produits.value = [...tousLesPieces.value];
+};
 ```
 
-**Output**
+Risque de dupplication d'id --->id: tousLesPieces.value.length + 1
 
-::: info
-This is an info box.
-:::
+La génération d'id ne prend pas en compte les id déjà présent et l'utilisation de la longeur de 'tousLesPieces' ne prend pas en compte la suppression.
 
-::: tip
-This is a tip.
-:::
-
-::: warning
-This is a warning.
-:::
-
-::: danger
-This is a dangerous warning.
-:::
-
-::: details
-This is a details block.
-:::
-
-## More
-
-Check out the documentation for the [full list of markdown extensions](https://vitepress.dev/guide/markdown).
+Par exemple, si il y a 8 object dans la liste, l'id du prochain ajout sera l'id '9'. Maintenant, si on ajoute un oject et qu'on surpprime un object autre que celui qu'on vient d'ajouter. La génération d'id va redonner l'id '9' au prochain object ajouter alors qu'un object avec l'id '9' est déjà présent.
